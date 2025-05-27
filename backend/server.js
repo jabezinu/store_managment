@@ -25,15 +25,26 @@ app.post("/api/products", async (req, res) => {
     if(!product.name || !product.price || !product.image){
         return res.status(400).json({success: false, message: "please fill all filds"})
     }
-
+    
     const newProduct  = new Product(product)
-
+    
     try {
         await newProduct.save();
         return res.status(201).json({success: true, data: newProduct})
     } catch (error) {
         console.error(`Error on the product creatig ${error.massage}`);        
         res.status(500).json({success: false, message: "Server Error"})
+    }
+})
+
+app.get("/api/products/:id", async (req, res) => {
+    try {
+        const {id} = req.params;
+        const products = await Product.findById(id);
+        res.status(200).json({success: true, data: products})
+    } catch (error) {
+        console.error(`Error on the Product viewing ${error.message}`);
+        res.status(500).json({success: false, message: "Server Error"});        
     }
 })
 
