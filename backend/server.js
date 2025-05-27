@@ -9,6 +9,8 @@ const app = express();
 
 app.use(express.json());
 
+
+
 app.post("/api/products", async (req, res) => {
     const product = req.body;
     
@@ -27,7 +29,20 @@ app.post("/api/products", async (req, res) => {
     }
 })
 
+app.delete("/api/products/:id", async (req, res) => {
+    try {
+        const {id} = req.params;        
+        
+        await Product.findByIdAndDelete(id);
 
+        res.status(200).json({success: true, message: "product deleted"})
+        console.log("text for testing");
+        
+    } catch (error) {
+        console.error(`Error on the product deletion ${error.massage}`);        
+        res.status(500).json({success: false, message: "Server Error"})
+    }
+})
 
 // console.log(process.env.MONGO_URI);
 
@@ -35,4 +50,4 @@ app.post("/api/products", async (req, res) => {
 app.listen(5000, () => {
     connectDB();
     console.log("Server started at http://localhost:5000");    
-})
+});
