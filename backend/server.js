@@ -7,7 +7,9 @@ dotenv.config();
 
 const app = express();
 
-app.post("/", async (req, res) => {
+app.use(express.json());
+
+app.post("/api/products", async (req, res) => {
     const product = req.body;
     
     if(!product.name || !product.price || !product.image){
@@ -15,14 +17,17 @@ app.post("/", async (req, res) => {
     }
 
     const newProduct  = new Product(product)
+
     try {
         await newProduct.save();
-        res.status(201).json({success: true, data: newProduct})
+        return res.status(201).json({success: true, data: newProduct})
     } catch (error) {
         console.error(`Error on the product creatig ${error.massage}`);        
         res.status(500).json({success: false, message: "Server Error"})
     }
 })
+
+
 
 // console.log(process.env.MONGO_URI);
 
